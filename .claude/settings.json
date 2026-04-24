@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "additionalDirectories": [
+      "c:\\Users\\kevin\\.claude\\projects\\c--Users-kevin--gemini-antigravity-projects-orakulo-crm\\memory"
+    ],
+    "allow": [
+      "Bash(mkdir -p \"c:/Users/kevin/.gemini/antigravity/projects/orakulo-crm/.claude\")",
+      "Bash(mkdir -p \"c:/Users/kevin/.gemini/antigravity/projects/orakulo-crm/docs\")"
+    ]
+  }
+}
