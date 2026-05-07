@@ -2,30 +2,19 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import {
-  LayoutGrid,
-  Users,
-  Phone,
-  CalendarDays,
-  BarChart2,
-  FileText,
-  Settings,
-} from "lucide-react"
+import { LayoutList, FileText, BarChart2, Settings } from "lucide-react"
 
 const nav = [
-  { href: "/pipeline", label: "Pipeline", icon: LayoutGrid },
-  { href: "/leads", label: "Leads", icon: Users },
-  { href: "/calls", label: "Ligações", icon: Phone },
-  { href: "/agenda", label: "Agenda", icon: CalendarDays },
+  { href: "/lista", label: "Lista", icon: LayoutList },
+  { href: "/relatorio", label: "Relatório", icon: FileText },
   { href: "/metricas", label: "Métricas", icon: BarChart2 },
-  { href: "/propostas", label: "Propostas", icon: FileText },
 ]
 
 export function Sidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className="w-[220px] shrink-0 border-r border-[var(--color-lt-border)] bg-[var(--color-lt-surface)] flex flex-col h-screen sticky top-0">
+    <aside className="w-[200px] shrink-0 border-r border-[var(--color-lt-border)] bg-[var(--color-lt-surface)] flex flex-col h-screen sticky top-0">
       {/* Logo */}
       <div className="px-5 py-4 border-b border-[var(--color-lt-border)]">
         <span className="text-[15px] font-bold text-[var(--color-lt-text-bright)] tracking-tight">
@@ -41,7 +30,7 @@ export function Sidebar() {
             <Link
               key={href}
               href={href}
-              className={`flex items-center gap-2.5 px-3 py-2 rounded-md text-[13px] font-medium transition-colors ${
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-md text-[13px] font-medium ${
                 active
                   ? "bg-[var(--color-lt-surface-fade)] text-[var(--color-lt-text-bright)]"
                   : "text-[var(--color-lt-text-muted)] hover:bg-[var(--color-lt-surface-fade)] hover:text-[var(--color-lt-text-base)]"
@@ -61,9 +50,13 @@ export function Sidebar() {
       <div className="px-2 py-3 border-t border-[var(--color-lt-border)]">
         <Link
           href="/configuracoes"
-          className="flex items-center gap-2.5 px-3 py-2 rounded-md text-[13px] font-medium text-[var(--color-lt-text-muted)] hover:bg-[var(--color-lt-surface-fade)] hover:text-[var(--color-lt-text-base)] transition-colors"
+          className={`flex items-center gap-2.5 px-3 py-2 rounded-md text-[13px] font-medium ${
+            pathname.startsWith("/configuracoes")
+              ? "bg-[var(--color-lt-surface-fade)] text-[var(--color-lt-text-bright)]"
+              : "text-[var(--color-lt-text-muted)] hover:bg-[var(--color-lt-surface-fade)] hover:text-[var(--color-lt-text-base)]"
+          }`}
         >
-          <Settings size={15} />
+          <Settings size={15} className={pathname.startsWith("/configuracoes") ? "text-[var(--color-orakulo-primary)]" : ""} />
           Configurações
         </Link>
       </div>
