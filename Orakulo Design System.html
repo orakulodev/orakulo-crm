@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design System — Orakulo.dev</title>
+  <style>
+    @import url('https://cdn.jsdelivr.net/npm/geist@1.0.0/dist/fonts/geist-sans/style.css');
+    @import url('https://cdn.jsdelivr.net/npm/geist@1.0.0/dist/fonts/geist-mono/style.css');
+
+    /* ─── TOKENS ─────────────────────────────────────────── */
+    :root {
+      /* Brand blue — muda via tweaks */
+      --primary:        #0057ff;
+      --primary-hover:  #0047d4;
+      --primary-glow:   rgba(0, 87, 255, 0.2);
+      --primary-soft:   rgba(0, 87, 255, 0.08);
+
+      /* Light (cool) */
+      --lt-page-bg:     #f5f5f7;
+      --lt-surface:     #ffffff;
+      --lt-surface-fade:#eeeff3;
+      --lt-border:      #dddde8;
+      --lt-text-bright: #09090f;
+      --lt-text-base:   #3a3a4c;
+      --lt-text-muted:  #72728a;
+      --lt-footer:      #e8e8ef;
+
+      /* Dark (blue-tinted) */
+      --dk-base:        #06060e;
+      --dk-surface:     #0d0d1a;
+      --dk-surface-l3:  #13131f;
+      --dk-surface-fade:#17172a;
+      --dk-border:      #1e1e32;
+      --dk-text-bright: #ffffff;
+      --dk-text-base:   #b0b0cc;
+      --dk-text-muted:  #606080;
+
+      /* Complementary blues */
+      --accent:       #60a5fa;   /* Accent light — gradients, text highlights */
+      --deep:         #0d2d6e;   /* Deep navy — hero overlays, dark tints */
+
+      --radius-sm:   6px;
+      --radius-md:   10px;
+      --radius-lg:   14px;
+      --radius-xl:   20px;
+      --radius-2xl:  28px;
+      --radius-pill: 9999px;
+
+      --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'Geist Mono', 'Fira Code', monospace;
+    }
+
+    /* ─── THEME MAPPING ─────────────────────────────────── */
+    :root:not(.dark) {
+      --page-bg:     var(--lt-page-bg);
+      --surface:     var(--lt-surface);
+      --surface-l3:  var(--lt-surface);
+      --surface-fade:var(--lt-surface-fade);
+      --border:      var(--lt-border);
+      --text-bright: var(--lt-text-bright);
+      --text-base:   var(--lt-text-base);
+      --text-muted:  var(--lt-text-muted);
+      --footer-bg:   var(--lt-footer);
+    }
+    .dark {
+      --page-bg:     var(--dk-base);
+      --surface:     var(--dk-surface);
+      --surface-l3:  var(--dk-surface-l3);
+      --surface-fade:var(--dk-surface-fade);
+      --border:      var(--dk-border);
+      --text-bright: var(--dk-text-bright);
+      --text-base:   var(--dk-text-base);
+      --text-muted:  var(--dk-text-muted);
+      --footer-bg:   var(--dk-surface);
+    }
+
+    /* ─── BASE ──────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--page-bg);
+      color: var(--text-base);
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.3s ease, color 0.3s ease;
+      min-height: 100vh;
+    }
+    ::selection { background: var(--primary); color: #fff; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+    a { text-decoration: none; color: inherit; }
+
+    /* ─── LAYOUT ──────────────────────────────────────── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
+
+    /* ─── NAV ─────────────────────────────────────────── */
+    .ds-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: color-mix(in srgb, var(--page-bg) 75%, transparent);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border-bottom: 1px solid var(--border);
+    }
+    .ds-nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 32px; max-width: 1100px; margin: 0 auto;
+    }
+    .ds-logo {
+      font-size: 15px; font-weight: 800; letter-spacing: -0.04em;
+      color: var(--text-bright); display: flex; align-items: center; gap: 8px;
+    }
+    .ds-logo-dot { color: var(--primary); }
+    .ds-logo-badge {
+      font-size: 10px; font-weight: 600; color: var(--text-muted);
+      letter-spacing: 0.05em; padding: 3px 9px;
+      border: 1px solid var(--border); border-radius: var(--radius-pill);
+    }
+    .ds-nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
+    .ds-nav-links a {
+      font-size: 13px; color: var(--text-muted); font-weight: 500;
+      transition: color 0.15s;
+    }
+    .ds-nav-links a:hover { color: var(--primary); }
+    .theme-btn {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: var(--surface); border: 1px solid var(--border);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted); transition: all 0.15s;
+    }
+    .theme-btn:hover { color: var(--primary); border-color: var(--primary); }
+
+    /* ─── SECTIONS ───────────────────────────────────── */
+    .ds-section { padding: 80px 0; border-bottom: 1px solid var(--border); }
+    .ds-section:last-of-type { border-bottom: none; }
+    .section-header { margin-bottom: 48px; }
+    .section-tag {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+      color: var(--primary); text-transform: uppercase; margin-bottom: 10px; display: block;
+    }
+    .section-title {
+      font-size: clamp(22px,3vw,30px); font-weight: 800;
+      letter-spacing: -0.04em; color: var(--text-bright); line-height: 1.2;
+    }
+    .section-desc {
+      margin-top: 8px; font-size: 14px; color: var(--text-muted);
+      max-width: 520px; line-height: 1.65;
+    }
+
+    /* ─── HERO ───────────────────────────────────────── */
+    .ds-hero {
+      padding: 80px 0 72px;
+      border-bottom: 1px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+    .ds-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 15% 50%, rgba(0,87,255,0.06), transparent 60%),
+                  radial-gradient(ellipse 40% 40% at 85% 30%, rgba(0,87,255,0.04), transparent);
+      pointer-events: none;
+    }
+    /* Grid pattern */
+    .ds-hero::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: linear-gradient(var(--border) 1px, transparent 1px),
+                        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 48px 48px;
+      opacity: 0.4;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
+      pointer-events: none;
+    }
+    .hero-content { position: relative; z-index: 1; }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: color-mix(in srgb, var(--surface) 80%, transparent);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill); padding: 5px 14px;
+      font-size: 11px; font-weight: 600; color: var(--text-muted);
+      letter-spacing: 0.06em; margin-bottom: 28px;
+    }
+    .hero-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--primary); animation: pulse 2s ease-in-out infinite;
+      box-shadow: 0 0 8px var(--primary);
+    }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(1.5)} }
+    .hero-h1 {
+      font-size: clamp(36px, 5.5vw, 60px);
+      font-weight: 800; letter-spacing: -0.05em; line-height: 1.05;
+      color: var(--text-bright); margin-bottom: 20px;
+    }
+    .hero-h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--primary) 0%, #60a5fa 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero-sub {
+      font-size: 16px; color: var(--text-muted); line-height: 1.7;
+      max-width: 500px; margin-bottom: 36px;
+    }
+    .hero-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 500; color: var(--text-muted);
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-pill); padding: 5px 12px;
+    }
+    .chip svg { color: var(--primary); }
+
+    /* ─── GRID ───────────────────────────────────────── */
+    .grid-2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+    @media (max-width: 768px) {
+      .grid-2,.grid-3,.grid-4 { grid-template-columns: 1fr; }
+      .ds-nav-links { display: none; }
+      .container { padding: 0 20px; }
+    }
+
+    /* ─── SWATCHES ───────────────────────────────────── */
+    .swatch-label {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+      color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px;
+    }
+    .swatch-row { display: flex; flex-direction: column; gap: 6px; }
+    .swatch {
+      display: flex; align-items: center; gap: 14px; padding: 10px 14px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-md); transition: border-color 0.15s;
+    }
+    .swatch:hover { border-color: var(--primary); }
+    .swatch-color { width: 40px; height: 36px; border-radius: 6px; flex-shrink: 0; }
+    .swatch-name { font-size: 13px; font-weight: 600; color: var(--text-bright); }
+    .swatch-hex { font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); margin-top: 1px; }
+    .swatch-use { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+
+    .primary-hero {
+      border-radius: var(--radius-xl); overflow: hidden; margin-bottom: 12px;
+      position: relative;
+    }
+    .primary-hero-fill {
+      height: 110px;
+      background: var(--primary);
+      display: flex; align-items: flex-end; padding: 16px 20px;
+      position: relative; overflow: hidden;
+    }
+    .primary-hero-fill::before {
+      content: '';
+      position: absolute; top: -20px; right: -20px;
+      width: 120px; height: 120px;
+      background: rgba(255,255,255,0.1); border-radius: 50%; filter: blur(20px);
+    }
+    .primary-hero-fill span { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.8); font-family: var(--font-mono); position: relative; z-index: 1; }
+
+    /* ─── TYPOGRAPHY ─────────────────────────────────── */
+    .type-row {
+      display: flex; align-items: baseline; gap: 24px; padding: 22px 20px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); margin-bottom: 6px;
+    }
+    .type-meta { min-width: 160px; flex-shrink: 0; }
+    .type-meta-name { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: var(--text-muted); }
+    .type-meta-spec { font-size: 10px; color: var(--text-muted); font-family: var(--font-mono); margin-top: 3px; line-height: 1.5; }
+    .t-display { font-size: clamp(32px,5vw,52px); font-weight: 800; letter-spacing: -0.05em; line-height: 1.05; color: var(--text-bright); }
+    .t-h1 { font-size: clamp(24px,4vw,38px); font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; color: var(--text-bright); }
+    .t-h2 { font-size: clamp(20px,3vw,28px); font-weight: 700; letter-spacing: -0.03em; line-height: 1.2; color: var(--text-bright); }
+    .t-h3 { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.3; color: var(--text-bright); }
+    .t-body-lg { font-size: 17px; line-height: 1.65; color: var(--text-base); }
+    .t-body { font-size: 15px; line-height: 1.6; color: var(--text-base); }
+    .t-body-sm { font-size: 13px; line-height: 1.6; color: var(--text-base); }
+    .t-mono { font-family: var(--font-mono); font-size: 13px; color: var(--text-muted); }
+    .eyebrow { font-size: 11px; font-weight: 500; letter-spacing: 0.12em; color: var(--text-muted); }
+
+    /* Gradient text */
+    .t-gradient {
+      background: linear-gradient(135deg, var(--primary) 0%, #60a5fa 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .t-gradient-dark {
+      background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, #fff 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    /* ─── BUTTONS ────────────────────────────────────── */
+    .demo-area {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 16px;
+      padding: 36px; background: var(--surface-fade);
+      border: 1px solid var(--border); border-radius: var(--radius-xl);
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 20px; border-radius: var(--radius-md);
+      font-size: 14px; font-weight: 700; font-family: var(--font-sans);
+      cursor: pointer; border: none; transition: all 0.18s;
+      letter-spacing: -0.01em;
+    }
+    .btn svg { transition: transform 0.18s; }
+    .btn:hover svg { transform: translateX(3px); }
+    .btn-primary {
+      background: var(--primary); color: white;
+      box-shadow: 0 4px 16px var(--primary-glow);
+    }
+    .btn-primary:hover { background: var(--primary-hover); box-shadow: 0 6px 24px var(--primary-glow); }
+    .btn-secondary {
+      background: var(--surface); color: var(--text-bright);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { border-color: var(--text-muted); }
+    .btn-ghost {
+      background: transparent; color: var(--text-base);
+      border: 1px solid transparent;
+    }
+    .btn-ghost:hover { color: var(--primary); border-color: var(--border); }
+    .btn-dark {
+      background: var(--text-bright); color: var(--page-bg);
+    }
+    .btn-dark:hover { opacity: 0.85; }
+    .btn-sm { padding: 7px 14px; font-size: 12px; }
+    .btn-lg { padding: 13px 26px; font-size: 15px; }
+
+    /* ─── CARDS ──────────────────────────────────────── */
+    .card {
+      border-radius: var(--radius-xl); border: 1px solid var(--border);
+      padding: 24px; background: var(--surface);
+      transition: transform 0.2s cubic-bezier(0.4,0,0.2,1),
+                  box-shadow 0.2s, border-color 0.2s;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: var(--primary);
+      box-shadow: 0 8px 32px var(--primary-glow);
+    }
+    .card-dark {
+      background: var(--lt-text-bright); color: white; border-color: #1a1a2e;
+    }
+    .dark .card-dark { background: var(--dk-surface-l3); border-color: var(--dk-border); }
+    .card-icon {
+      width: 40px; height: 40px; border-radius: var(--radius-md);
+      background: var(--primary-soft); display: flex; align-items: center; justify-content: center;
+      color: var(--primary); margin-bottom: 16px;
+    }
+    .card-title { font-size: 15px; font-weight: 700; letter-spacing: -0.02em; color: var(--text-bright); margin-bottom: 6px; }
+    .card-desc { font-size: 13px; line-height: 1.6; color: var(--text-muted); }
+    .step-num { font-size: 46px; font-weight: 900; color: var(--border); line-height: 1; margin-bottom: 8px; letter-spacing: -0.05em; }
+
+    /* ─── LINK CARDS ─────────────────────────────────── */
+    .link-card {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 16px; border-radius: var(--radius-lg);
+      background: var(--surface); border: 1px solid var(--border);
+      transition: transform 0.18s, border-color 0.18s, box-shadow 0.18s;
+      cursor: pointer; position: relative; overflow: hidden;
+    }
+    .link-card:hover { transform: translateY(-2px); border-color: var(--primary); box-shadow: 0 8px 24px var(--primary-glow); }
+    .link-card-featured { border-color: rgba(0,87,255,0.35); }
+    .link-card-featured::before {
+      content: ''; position: absolute; top: 0; right: 0;
+      width: 80px; height: 80px;
+      background: var(--primary); border-radius: 50%; filter: blur(40px); opacity: 0.08;
+    }
+    .link-card-left { display: flex; align-items: center; gap: 12px; position: relative; z-index: 1; }
+    .link-card-icon {
+      width: 36px; height: 36px; border-radius: var(--radius-md);
+      background: var(--primary-soft); display: flex; align-items: center; justify-content: center;
+      color: var(--primary); flex-shrink: 0; transition: transform 0.18s;
+    }
+    .link-card:hover .link-card-icon { transform: scale(1.08); }
+    .link-card-icon-plain { background: var(--surface-fade); color: var(--text-muted); }
+    .link-card-name { font-size: 14px; font-weight: 600; color: var(--text-bright); }
+    .link-card-sub { font-size: 11px; color: var(--primary); margin-top: 1px; }
+    .link-card-sub-plain { color: var(--text-muted); }
+    .link-card-arrow { color: var(--text-muted); transition: transform 0.18s, color 0.18s; }
+    .link-card:hover .link-card-arrow { transform: translateX(3px); color: var(--primary); }
+
+    /* ─── FORM ───────────────────────────────────────── */
+    .form-field { margin-bottom: 14px; }
+    .form-label { display: block; font-size: 13px; font-weight: 600; color: var(--text-base); margin-bottom: 6px; }
+    .form-input {
+      width: 100%; padding: 10px 14px; border-radius: var(--radius-md);
+      background: var(--page-bg); border: 1px solid var(--border);
+      font-family: var(--font-sans); font-size: 14px; color: var(--text-bright);
+      outline: none; transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .form-input::placeholder { color: var(--text-muted); }
+    .form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+    textarea.form-input { resize: vertical; min-height: 80px; }
+
+    /* ─── BADGES ─────────────────────────────────────── */
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 600; padding: 4px 11px;
+      border-radius: var(--radius-pill); border: 1px solid var(--border);
+      background: var(--surface); color: var(--text-muted);
+    }
+    .badge-blue { background: var(--primary-soft); border-color: rgba(0,87,255,0.25); color: var(--primary); }
+    .badge-dark { background: var(--text-bright); color: var(--page-bg); border-color: transparent; }
+    .tag-pill { display: inline-flex; align-items: center; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: var(--radius-pill); gap: 5px; }
+    .tag-done { background: rgba(34,197,94,0.1); color: #22c55e; }
+    .tag-wip  { background: var(--primary-soft); color: var(--primary); }
+    .tag-soon { background: var(--surface-fade); color: var(--text-muted); }
+
+    /* ─── TOKEN TABLE ────────────────────────────────── */
+    .token-table { width: 100%; border-collapse: collapse; }
+    .token-table th {
+      text-align: left; font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+      color: var(--text-muted); padding: 8px 14px; border-bottom: 1px solid var(--border);
+    }
+    .token-table td {
+      padding: 10px 14px; font-size: 13px; color: var(--text-base);
+      border-bottom: 1px solid var(--border);
+    }
+    .token-table tr:last-child td { border-bottom: none; }
+    .token-table tr:hover td { background: var(--surface-fade); }
+    code {
+      font-family: var(--font-mono); font-size: 12px;
+      background: var(--surface-fade); color: var(--primary);
+      padding: 2px 7px; border-radius: 4px;
+    }
+
+    /* ─── SPACE ──────────────────────────────────────── */
+    .space-item { display: flex; align-items: center; gap: 16px; margin-bottom: 8px; }
+    .space-box { background: var(--primary-soft); border: 1px solid rgba(0,87,255,0.15); border-radius: 3px; height: 18px; flex-shrink: 0; }
+    .space-meta { font-size: 12px; color: var(--text-muted); font-family: var(--font-mono); }
+
+    /* ─── LAYOUT STRIPS ──────────────────────────────── */
+    .layout-strip {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-xl); overflow: hidden;
+    }
+    .layout-nav-bar {
+      height: 42px; background: color-mix(in srgb, var(--dk-base) 90%, transparent);
+      border-bottom: 1px solid var(--dk-border);
+      display: flex; align-items: center; justify-content: space-between; padding: 0 18px;
+    }
+    :root:not(.dark) .layout-nav-bar { background: var(--lt-page-bg); border-color: var(--lt-border); }
+    .layout-nav-dot { font-size: 11px; font-weight: 800; color: var(--primary); }
+    .layout-hero-strip { padding: 28px 18px; background: var(--dk-base); display: flex; flex-direction: column; gap: 7px; }
+    :root:not(.dark) .layout-hero-strip { background: var(--lt-page-bg); }
+    .layout-white-strip { padding: 24px 18px; background: var(--dk-surface); display: flex; gap: 8px; }
+    :root:not(.dark) .layout-white-strip { background: #fff; }
+    .layout-footer-strip { padding: 14px 18px; background: var(--dk-surface-fade); }
+    :root:not(.dark) .layout-footer-strip { background: var(--lt-footer); }
+    .layout-block { border-radius: 4px; background: var(--dk-border); height: 10px; }
+    :root:not(.dark) .layout-block { background: var(--lt-border); }
+    .layout-block-sm { height: 7px; flex: 1; }
+    .layout-card-mini { flex: 1; height: 52px; background: var(--dk-surface-l3); border: 1px solid var(--dk-border); border-radius: 8px; }
+    :root:not(.dark) .layout-card-mini { background: var(--lt-surface-fade); border-color: var(--lt-border); }
+    .layout-label { font-size: 9px; font-weight: 600; letter-spacing: 0.06em; color: var(--text-muted); text-align: left; padding: 5px 18px; border-top: 1px solid var(--border); }
+
+    hr { border: none; border-top: 1px solid var(--border); }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="ds-nav">
+    <div class="ds-nav-inner">
+      <div class="ds-logo">
+        orakulo<span class="ds-logo-dot">.</span>dev
+        <span class="ds-logo-badge">Design System</span>
+      </div>
+      <ul class="ds-nav-links">
+        <li><a href="#colors">Cores</a></li>
+        <li><a href="#typography">Tipografia</a></li>
+        <li><a href="#components">Componentes</a></li>
+        <li><a href="#tokens">Tokens</a></li>
+        <li><a href="#layout">Layout</a></li>
+        <li><a href="#roadmap">Roadmap</a></li>
+        <li><a href="#animation">Animação</a></li>
+      </ul>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button class="theme-btn" id="themeToggle" title="Alternar tema">
+          <svg id="iconSun" width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display:none"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          <svg id="iconMoon" width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="ds-hero">
+    <div class="container hero-content">
+      <div class="hero-eyebrow">
+        <span class="hero-dot"></span>
+        IDV Cool — Identidade Visual v2
+      </div>
+      <h1 class="hero-h1">Design System<br><em>Orakulo.dev</em></h1>
+      <p class="hero-sub">Paleta fria e tech — cinzas azulados, azul elétrico, preto profundo. Referência: Framer. Stack: Next.js 15 · Tailwind v4 · Geist.</p>
+      <div class="hero-chips">
+        <span class="chip"><svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M20.188 10.934C18.652 8.554 15.84 6.5 12 6.5S5.348 8.554 3.812 10.934C3.486 11.44 3.3 11.957 3.3 12.5s.186 1.06.512 1.566C5.348 16.446 8.16 18.5 12 18.5s6.652-2.054 8.188-4.434c.326-.506.512-1.023.512-1.566s-.186-1.06-.512-1.566z" stroke-width="1.5"/></svg>Light & Dark Mode</span>
+        <span class="chip"><svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>Paleta Cool Tech</span>
+        <span class="chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1" stroke-width="1.5"/><rect x="14" y="3" width="7" height="7" rx="1" stroke-width="1.5"/><rect x="14" y="14" width="7" height="7" rx="1" stroke-width="1.5"/><rect x="3" y="14" width="7" height="7" rx="1" stroke-width="1.5"/></svg>Primary: #0057FF</span>
+        <span class="chip">Abril 2026</span>
+      </div>
+    </div>
+  </div>
+
+  <main>
+
+    <!-- 1. CORES -->
+    <section class="ds-section" id="colors">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">01 — Cores</span>
+          <h2 class="section-title">Paleta Cool Tech</h2>
+          <p class="section-desc">Mudança de quente (bege/laranja) para frio (cinza azulado + azul elétrico). Pretos com leve subtom azul no dark mode.</p>
+        </div>
+
+        <!-- Primary -->
+        <div style="margin-bottom:48px;">
+          <div class="swatch-label">Cor de Destaque — Azul Elétrico</div>
+          <div class="grid-2" style="gap:24px;">
+            <div>
+              <div class="primary-hero">
+                <div class="primary-hero-fill" id="primarySwatch">
+                  <span id="primaryHex">#0057ff · --primary</span>
+                </div>
+              </div>
+              <div class="swatch-row">
+                <div class="swatch">
+                  <div class="swatch-color" id="swPrimary" style="background:#0057ff;"></div>
+                  <div>
+                    <div class="swatch-name">Primary</div>
+                    <div class="swatch-hex" id="swPrimaryHex">#0057ff · --primary</div>
+                    <div class="swatch-use">CTAs, links, ícones de ação, glow, dots</div>
+                  </div>
+                </div>
+                <div class="swatch">
+                  <div class="swatch-color" id="swHover" style="background:#0047d4;"></div>
+                  <div>
+                    <div class="swatch-name">Primary Hover</div>
+                    <div class="swatch-hex" id="swHoverHex">#0047d4 · --primary-hover</div>
+                    <div class="swatch-use">Estado hover de botões primary</div>
+                  </div>
+                </div>
+                <div class="swatch">
+                  <div class="swatch-color" style="background:rgba(0,87,255,0.08);border:1px solid rgba(0,87,255,0.15);"></div>
+                  <div>
+                    <div class="swatch-name">Primary Soft</div>
+                    <div class="swatch-hex">rgba(0,87,255,0.08) · --primary-soft</div>
+                    <div class="swatch-use">Fundos de ícones, badges sutis</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Regras -->
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:24px;display:flex;flex-direction:column;gap:14px;">
+              <span class="eyebrow">[ Regras de Uso ]</span>
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <div style="display:flex;gap:10px;"><svg width="15" height="15" fill="none" stroke="var(--primary)" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span style="font-size:13px;color:var(--text-base);">CTA principal único da página</span></div>
+                <div style="display:flex;gap:10px;"><svg width="15" height="15" fill="none" stroke="var(--primary)" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span style="font-size:13px;color:var(--text-base);">Imutável entre temas light/dark</span></div>
+                <div style="display:flex;gap:10px;"><svg width="15" height="15" fill="none" stroke="var(--primary)" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span style="font-size:13px;color:var(--text-base);">Glow azul no hover de cards</span></div>
+                <div style="display:flex;gap:10px;"><svg width="15" height="15" fill="none" stroke="var(--primary)" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span style="font-size:13px;color:var(--text-base);">Dot de status com box-shadow azul</span></div>
+                <hr>
+                <div style="display:flex;gap:10px;"><svg width="15" height="15" fill="none" stroke="#ef4444" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg><span style="font-size:13px;color:var(--text-base);">Não usar em fundos de seção</span></div>
+                <div style="display:flex;gap:10px;"><svg width="15" height="15" fill="none" stroke="#ef4444" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg><span style="font-size:13px;color:var(--text-base);">Máx 2 elementos azuis por viewport</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Complementary Blues -->
+        <div style="margin-bottom:48px;">
+          <div class="swatch-label">Azuis Complementares</div>
+          <div class="grid-2" style="gap:16px;">
+            <div class="swatch" style="padding:16px 18px;border-radius:var(--radius-xl);">
+              <div style="width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,#0057ff,#60a5fa);flex-shrink:0;box-shadow:0 4px 16px rgba(0,87,255,0.3);"></div>
+              <div style="flex:1;">
+                <div class="swatch-name">Accent Light <code style="font-size:10px;">--accent</code></div>
+                <div class="swatch-hex">#60a5fa · blue-400</div>
+                <div class="swatch-use">Extremidade dos gradientes de texto, glows suaves, ícones secundários</div>
+                <div style="margin-top:10px;display:flex;gap:8px;align-items:center;">
+                  <span style="font-size:11px;font-weight:700;background:linear-gradient(135deg,#0057ff,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Automação & IA →</span>
+                  <span style="font-size:10px;color:var(--text-muted);">gradiente primary → accent</span>
+                </div>
+              </div>
+            </div>
+            <div class="swatch" style="padding:16px 18px;border-radius:var(--radius-xl);">
+              <div style="width:56px;height:56px;border-radius:12px;background:#0d2d6e;flex-shrink:0;box-shadow:0 4px 16px rgba(13,45,110,0.4);border:1px solid rgba(0,87,255,0.2);"></div>
+              <div style="flex:1;">
+                <div class="swatch-name">Deep Navy <code style="font-size:10px;">--deep</code></div>
+                <div class="swatch-hex">#0d2d6e · blue-950</div>
+                <div class="swatch-use">Hero overlays, tints de superfície escura, profundidade em dark mode</div>
+                <div style="margin-top:10px;display:flex;gap:8px;align-items:center;">
+                  <div style="height:18px;width:80px;border-radius:4px;background:linear-gradient(90deg,#0d2d6e,#0057ff);"></div>
+                  <span style="font-size:10px;color:var(--text-muted);">deep → primary</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:12px;padding:16px 20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+            <span style="font-size:11px;font-weight:700;letter-spacing:0.06em;color:var(--text-muted);">PALETA COMPLETA</span>
+            <div style="display:flex;gap:6px;align-items:center;">
+              <div style="width:28px;height:28px;border-radius:6px;background:#0d2d6e;" title="Deep #0d2d6e"></div>
+              <div style="width:28px;height:28px;border-radius:6px;background:#1d4ed8;" title="Hover #1d4ed8"></div>
+              <div style="width:36px;height:36px;border-radius:8px;background:#0057ff;box-shadow:0 0 12px rgba(0,87,255,0.5);" title="Primary #0057ff"></div>
+              <div style="width:28px;height:28px;border-radius:6px;background:#60a5fa;" title="Accent #60a5fa"></div>
+              <div style="width:28px;height:28px;border-radius:6px;background:#bfdbfe;" title="Lightest #bfdbfe"></div>
+            </div>
+            <span style="font-size:11px;color:var(--text-muted);">Deep · Hover · <strong style="color:var(--primary);">Primary ★</strong> · Accent · Soft</span>
+          </div>
+        </div>
+
+        <!-- Light + Dark swatches -->
+        <div class="grid-2" style="gap:32px;">
+          <div>
+            <div class="swatch-label">Light Mode</div>
+            <div class="swatch-row">
+              <div class="swatch"><div class="swatch-color" style="background:#f5f5f7;border:1px solid #dddde8;"></div><div><div class="swatch-name">Page BG</div><div class="swatch-hex">#f5f5f7 · --lt-page-bg</div><div class="swatch-use">Fundo base, hero</div></div></div>
+              <div class="swatch"><div class="swatch-color" style="background:#ffffff;border:1px solid #dddde8;"></div><div><div class="swatch-name">Surface</div><div class="swatch-hex">#ffffff · --lt-surface</div><div class="swatch-use">Cards, seções 2+</div></div></div>
+              <div class="swatch"><div class="swatch-color" style="background:#eeeff3;border:1px solid #dddde8;"></div><div><div class="swatch-name">Surface Fade</div><div class="swatch-hex">#eeeff3 · --lt-surface-fade</div><div class="swatch-use">Áreas de demo, ícones</div></div></div>
+              <div class="swatch"><div class="swatch-color" style="background:#e8e8ef;border:1px solid #dddde8;"></div><div><div class="swatch-name">Footer BG</div><div class="swatch-hex">#e8e8ef</div><div class="swatch-use">Rodapé</div></div></div>
+              <div class="swatch"><div class="swatch-color" style="background:#dddde8;"></div><div><div class="swatch-name">Border</div><div class="swatch-hex">#dddde8 · --lt-border</div><div class="swatch-use">Bordas de cards e inputs</div></div></div>
+              <div class="swatch"><div class="swatch-color" style="background:#09090f;"></div><div><div class="swatch-name">Text Bright</div><div class="swatch-hex">#09090f · --lt-text-bright</div><div class="swatch-use">Títulos (preto azulado)</div></div></div>
+              <div class="swatch"><div class="swatch-color" style="background:#3a3a4c;"></div><div><div class="swatch-name">Text Base</div><div class="swatch-hex">#3a3a4c · --lt-text-base</div><div class="swatch-use">Parágrafos</div></div></div>
+              <div class="swatch"><div class="swatch-color" style="background:#72728a;"></div><div><div class="swatch-name">Text Muted</div><div class="swatch-hex">#72728a · --lt-text-muted</div><div class="swatch-use">Eyebrows, placeholders</div></div></div>
+            </div>
+          </div>
+          <div>
+            <div class="swatch-label">Dark Mode (padrão Orakulo)</div>
+            <div class="swatch-row">
+              <div class="swatch"><div class="swatch-color" style="background:#06060e;"></div><div><div class="swatch-name">Base</div><div class="swatch-hex">#06060e · --dk-base</div><div class="swatch-use">Fundo geral dark (azul profundo)</div></div></div>
+              <div class="swatch"><div class="swatch-color" style="background:#0d0d1a;border:1px solid #1e1e32;"></div><div><div class="swatch-name">Surface</div><div class="swatch-hex">#0d0d1a · --dk-surface</div><div class="swatch-use">Seções alternadas dark</div></div></div>
+              <div class="swatch"><div class="swatch-color" style="background:#13131f;border:1px solid #1e1e32;"></div><div><div class="swatch-name">Surface L3</div><div class="swatch-hex">#13131f · --dk-surface-l3</div><div class="swatch-use">Cards dark</div></div></div>
+              <div class="swatch"><div class="swatch-color" style="background:#17172a;border:1px solid #1e1e32;"></div><div><div class="swatch-name">Surface Fade</div><div class="swatch-hex">#17172a · --dk-surface-fade</div><div class="swatch-use">Áreas de demo dark</div></div></div>
+              <div class="swatch"><div class="swatch-color" style="background:#1e1e32;"></div><div><div class="swatch-name">Border</div><div class="swatch-hex">#1e1e32 · --dk-border</div><div class="swatch-use">Bordas dark (azuladas)</div></div></div>
+              <div class="swatch"><div class="swatch-color" style="background:#ffffff;"></div><div><div class="swatch-name">Text Bright</div><div class="swatch-hex">#ffffff · --dk-text-bright</div><div class="swatch-use">Títulos dark</div></div></div>
+              <div class="swatch"><div class="swatch-color" style="background:#b0b0cc;"></div><div><div class="swatch-name">Text Base</div><div class="swatch-hex">#b0b0cc · --dk-text-base</div><div class="swatch-use">Parágrafos (azul frio)</div></div></div>
+              <div class="swatch"><div class="swatch-color" style="background:#606080;"></div><div><div class="swatch-name">Text Muted</div><div class="swatch-hex">#606080 · --dk-text-muted</div><div class="swatch-use">Eyebrows dark</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. TIPOGRAFIA -->
+    <section class="ds-section" id="typography">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">02 — Tipografia</span>
+          <h2 class="section-title">Sistema Tipográfico</h2>
+          <p class="section-desc">Font: <strong>Geist</strong>. Tracking negativo agressivo em headings (–0.04 a –0.05em). Gradiente hero azul → sky.</p>
+        </div>
+        <div style="margin-bottom:16px;">
+          <div class="type-row">
+            <div class="type-meta"><div class="type-meta-name">DISPLAY</div><div class="type-meta-spec">clamp(32px,5.5vw,52px)<br>800 · –0.05em</div></div>
+            <div class="t-display t-gradient">Automação & IA</div>
+          </div>
+          <div class="type-row">
+            <div class="type-meta"><div class="type-meta-name">H1</div><div class="type-meta-spec">clamp(24px,4vw,38px)<br>800 · –0.04em</div></div>
+            <div class="t-h1">Seu WhatsApp responde<br>leads enquanto você dorme.</div>
+          </div>
+          <div class="type-row">
+            <div class="type-meta"><div class="type-meta-name">H2</div><div class="type-meta-spec">clamp(20px,3vw,28px)<br>700 · –0.03em</div></div>
+            <div class="t-h2">Simples para você. Complexo por dentro.</div>
+          </div>
+          <div class="type-row">
+            <div class="type-meta"><div class="type-meta-name">H3</div><div class="type-meta-spec">20px · 700 · –0.02em</div></div>
+            <div class="t-h3">Agente de Atendimento no WhatsApp</div>
+          </div>
+          <div class="type-row">
+            <div class="type-meta"><div class="type-meta-name">BODY LG</div><div class="type-meta-spec">17px · 400 · lh 1.7</div></div>
+            <div class="t-body-lg">Implementamos agentes de atendimento com IA para WhatsApp e Instagram DM.</div>
+          </div>
+          <div class="type-row">
+            <div class="type-meta"><div class="type-meta-name">BODY</div><div class="type-meta-spec">15px · 400 · lh 1.6</div></div>
+            <div class="t-body">O agente qualifica, encaminha para compra e avisa você quando um lead precisa de atenção — 24h por dia, sem contratar ninguém.</div>
+          </div>
+          <div class="type-row">
+            <div class="type-meta"><div class="type-meta-name">BODY SM</div><div class="type-meta-spec">13px · 400 · lh 1.6</div></div>
+            <div class="t-body-sm">Número verificado pela Meta. Sem risco de banimento.</div>
+          </div>
+          <div class="type-row">
+            <div class="type-meta"><div class="type-meta-name">EYEBROW</div><div class="type-meta-spec">11px · 500 · ls 0.12em</div></div>
+            <div><span class="eyebrow">[ Como funciona ]</span> &nbsp;&nbsp; <span class="eyebrow">[ Resultado real ]</span> &nbsp;&nbsp; <span class="eyebrow">[ Para quem é ]</span></div>
+          </div>
+          <div class="type-row">
+            <div class="type-meta"><div class="type-meta-name">MONO</div><div class="type-meta-spec">Geist Mono · 12–13px</div></div>
+            <div class="t-mono">--primary: #0057ff; · orakulo.dev/imobiliaria</div>
+          </div>
+        </div>
+
+        <!-- Gradient hero -->
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:28px;position:relative;overflow:hidden;">
+          <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 0% 50%, rgba(0,87,255,0.06),transparent);pointer-events:none;"></div>
+          <span class="eyebrow" style="display:block;margin-bottom:16px;">[ Gradiente Hero — assinatura visual ]</span>
+          <h1 class="t-h1" style="margin-bottom:16px;"><span class="t-gradient">Automação & IA</span><br><span style="color:var(--text-bright);">para o seu negócio.</span></h1>
+          <code>background: linear-gradient(135deg, var(--primary) 0%, #60a5fa 100%); -webkit-text-fill-color: transparent</code>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. COMPONENTES -->
+    <section class="ds-section" id="components">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">03 — Componentes</span>
+          <h2 class="section-title">Biblioteca de Componentes</h2>
+        </div>
+
+        <!-- Botões -->
+        <div style="margin-bottom:48px;">
+          <h3 class="t-h3" style="margin-bottom:6px;">Botões / CTAs</h3>
+          <p class="t-body-sm" style="margin-bottom:20px;color:var(--text-muted);">Geist · weight 700 · radius 10px · seta translada 3px no hover.</p>
+          <div class="demo-area" style="flex-direction:column;align-items:flex-start;gap:20px;">
+            <div>
+              <p style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:10px;">TAMANHOS</p>
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                <button class="btn btn-primary btn-sm">Iniciar <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></button>
+                <button class="btn btn-primary">Iniciar Parceria <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></button>
+                <button class="btn btn-primary btn-lg">Iniciar Parceria <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></button>
+              </div>
+            </div>
+            <hr style="width:100%;">
+            <div>
+              <p style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:10px;">VARIANTES</p>
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                <button class="btn btn-primary">btn-primary →</button>
+                <button class="btn btn-secondary">btn-secondary</button>
+                <button class="btn btn-dark">btn-dark →</button>
+                <button class="btn btn-ghost">btn-ghost ↓</button>
+              </div>
+            </div>
+            <hr style="width:100%;">
+            <div>
+              <p style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:10px;">PAR PADRÃO (hero)</p>
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                <button class="btn btn-primary">Quero automatizar <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></button>
+                <button class="btn btn-secondary">Ver serviços ↓</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Badges -->
+        <div style="margin-bottom:48px;">
+          <h3 class="t-h3" style="margin-bottom:6px;">Badges & Eyebrows</h3>
+          <p class="t-body-sm" style="margin-bottom:20px;color:var(--text-muted);">Eyebrow sempre texto puro entre [ colchetes ]. Badges pill com borda.</p>
+          <div class="demo-area" style="flex-direction:column;align-items:flex-start;gap:16px;">
+            <div>
+              <p style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:10px;">EYEBROW</p>
+              <span class="eyebrow">[ Como funciona ]</span>&nbsp;&nbsp;&nbsp;
+              <span class="eyebrow">[ Resultado real ]</span>&nbsp;&nbsp;&nbsp;
+              <span class="eyebrow">[ Para quem é ]</span>
+            </div>
+            <hr style="width:100%;">
+            <div>
+              <p style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:10px;">BADGES</p>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+                <span class="badge"><span style="width:6px;height:6px;border-radius:50%;background:var(--primary);box-shadow:0 0 6px var(--primary);animation:pulse 2s infinite;"></span>Disponível agora</span>
+                <span class="badge badge-blue">✦ Novo recurso</span>
+                <span class="badge badge-dark">Beta</span>
+                <span class="badge">Canal principal</span>
+              </div>
+            </div>
+            <hr style="width:100%;">
+            <div>
+              <p style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:10px;">STATUS</p>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <span class="tag-pill tag-done">✓ Concluído</span>
+                <span class="tag-pill tag-wip">⟳ Em andamento</span>
+                <span class="tag-pill tag-soon">📅 Futuro</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cards -->
+        <div style="margin-bottom:48px;">
+          <h3 class="t-h3" style="margin-bottom:6px;">Cards de Feature</h3>
+          <p class="t-body-sm" style="margin-bottom:20px;color:var(--text-muted);">Hover: translateY(-2px) + border azul + glow azul. Radius 20px.</p>
+          <div class="grid-3">
+            <div class="card">
+              <div class="card-icon"><svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+              <div class="card-title">Qualificação automática</div>
+              <div class="card-desc">O agente coleta nome, situação e interesse antes de qualquer ação humana.</div>
+            </div>
+            <div class="card" style="background:var(--dk-surface-l3);border-color:var(--dk-border);">
+              <div class="card-icon"><svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+              <div class="card-title" style="color:white;">Responde 24/7</div>
+              <div class="card-desc">Não parece robô. Conversa como uma pessoa treinada no seu negócio.</div>
+              <span style="display:inline-block;margin-top:14px;background:var(--primary);color:white;font-size:10px;font-weight:700;padding:3px 10px;border-radius:var(--radius-sm);">Canal principal</span>
+            </div>
+            <div class="card" style="background:var(--surface-fade);">
+              <div class="card-icon"><svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg></div>
+              <div class="card-title">Human-in-the-loop</div>
+              <div class="card-desc">Quando um lead quente aparece, você recebe notificação no WhatsApp.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Link Cards -->
+        <div style="margin-bottom:48px;">
+          <h3 class="t-h3" style="margin-bottom:6px;">Link Cards (Bio)</h3>
+          <p class="t-body-sm" style="margin-bottom:20px;color:var(--text-muted);">Featured com borda azul + glow. Plain com ícone neutro.</p>
+          <div style="max-width:360px;display:flex;flex-direction:column;gap:8px;">
+            <div class="link-card link-card-featured">
+              <div class="link-card-left">
+                <div class="link-card-icon"><svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg></div>
+                <div><div class="link-card-name">Automação Imóveis</div><div class="link-card-sub">Agendar Setup →</div></div>
+              </div>
+              <svg class="link-card-arrow" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </div>
+            <div class="link-card">
+              <div class="link-card-left">
+                <div class="link-card-icon link-card-icon-plain"><svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 21c-1.566 0-3.08-.415-4.42-1.203L2 22l2.253-5.467A8.93 8.93 0 0 1 3 12.031c0-4.962 4.038-9 9.031-9s9.031 4.038 9.031 9-4.038 9-9.031 9z"/></svg></div>
+                <div><div class="link-card-name">WhatsApp</div><div class="link-card-sub link-card-sub-plain">Fale comigo agora</div></div>
+              </div>
+              <svg class="link-card-arrow" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form -->
+        <div style="margin-bottom:48px;">
+          <h3 class="t-h3" style="margin-bottom:6px;">Formulário</h3>
+          <p class="t-body-sm" style="margin-bottom:20px;color:var(--text-muted);">Focus ring azul. Fundo usa --page-bg. Submit sempre btn-primary.</p>
+          <div style="max-width:380px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:24px;">
+            <span class="eyebrow" style="display:block;margin-bottom:18px;">[ Fale Conosco ]</span>
+            <div class="form-field"><label class="form-label">Nome</label><input class="form-input" type="text" placeholder="Seu nome completo"></div>
+            <div class="form-field"><label class="form-label">WhatsApp</label><input class="form-input" type="tel" placeholder="(11) 99999-9999"></div>
+            <div class="form-field"><label class="form-label">Mensagem</label><textarea class="form-input" placeholder="Descreva seu negócio..."></textarea></div>
+            <button class="btn btn-primary" style="width:100%;justify-content:center;">Enviar mensagem <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></button>
+          </div>
+        </div>
+
+        <!-- Chat -->
+        <div>
+          <h3 class="t-h3" style="margin-bottom:6px;">Chat Bubble (Mock WhatsApp)</h3>
+          <p class="t-body-sm" style="margin-bottom:20px;color:var(--text-muted);">Agente: bg-primary azul. Lead: bg surface-fade.</p>
+          <div style="max-width:290px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:16px;">
+            <div style="display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:12px;">
+              <svg width="18" height="18" fill="#25D366" viewBox="0 0 24 24"><path d="M12.031 21c-1.566 0-3.08-.415-4.42-1.203L2 22l2.253-5.467A8.93 8.93 0 0 1 3 12.031c0-4.962 4.038-9 9.031-9s9.031 4.038 9.031 9-4.038 9-9.031 9z"/></svg>
+              <span style="font-size:13px;font-weight:700;color:var(--text-bright);">WhatsApp</span>
+              <span style="margin-left:auto;width:7px;height:7px;border-radius:50%;background:#25D366;"></span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:9px;">
+              <div style="max-width:85%;align-self:flex-start;background:var(--surface-fade);border-radius:14px 14px 14px 3px;padding:9px 12px;font-size:12px;line-height:1.5;color:var(--text-base);">Oi, vi seu conteúdo e queria entender melhor como funciona</div>
+              <div style="max-width:85%;align-self:flex-end;background:var(--primary);border-radius:14px 14px 3px 14px;padding:9px 12px;font-size:12px;line-height:1.5;color:white;text-align:right;">Oi! Que bom. Você atende clientes hoje?</div>
+              <div style="max-width:85%;align-self:flex-start;background:var(--surface-fade);border-radius:14px 14px 14px 3px;padding:9px 12px;font-size:12px;line-height:1.5;color:var(--text-base);">Atendo sim, mas tô sobrecarregado</div>
+              <div style="max-width:85%;align-self:flex-end;background:var(--primary);border-radius:14px 14px 3px 14px;padding:9px 12px;font-size:12px;line-height:1.5;color:white;text-align:right;">Qual canal chega mais: WhatsApp ou DM?</div>
+            </div>
+            <p style="margin-top:10px;text-align:center;font-size:10px;color:var(--text-muted);">Respondido em 3s · IA Orakulo</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. TOKENS -->
+    <section class="ds-section" id="tokens">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">04 — Tokens</span>
+          <h2 class="section-title">Tokens de Design</h2>
+        </div>
+        <div class="grid-2" style="gap:32px;align-items:start;">
+          <div>
+            <p style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:12px;">BORDER RADIUS</p>
+            <table class="token-table" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;">
+              <thead><tr><th>Token</th><th>Valor</th><th>Uso</th></tr></thead>
+              <tbody>
+                <tr><td><code>--radius-sm</code></td><td>6px</td><td>Tags, badges inline</td></tr>
+                <tr><td><code>--radius-md</code></td><td>10px</td><td>Botões, inputs</td></tr>
+                <tr><td><code>--radius-lg</code></td><td>14px</td><td>Cards menores</td></tr>
+                <tr><td><code>--radius-xl</code></td><td>20px</td><td>Cards padrão</td></tr>
+                <tr><td><code>--radius-2xl</code></td><td>28px</td><td>Modais, panels</td></tr>
+                <tr><td><code>--radius-pill</code></td><td>9999px</td><td>Badges pill, avatar</td></tr>
+              </tbody>
+            </table>
+            <p style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:var(--text-muted);margin-top:28px;margin-bottom:12px;">BORDER RADIUS VISUAL</p>
+            <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
+              <div style="text-align:center;"><div style="width:48px;height:48px;background:var(--primary);border-radius:6px;margin:0 auto 6px;opacity:0.85;"></div><span style="font-size:9px;color:var(--text-muted);font-family:var(--font-mono);">6px</span></div>
+              <div style="text-align:center;"><div style="width:48px;height:48px;background:var(--primary);border-radius:10px;margin:0 auto 6px;opacity:0.88;"></div><span style="font-size:9px;color:var(--text-muted);font-family:var(--font-mono);">10px</span></div>
+              <div style="text-align:center;"><div style="width:48px;height:48px;background:var(--primary);border-radius:14px;margin:0 auto 6px;opacity:0.91;"></div><span style="font-size:9px;color:var(--text-muted);font-family:var(--font-mono);">14px</span></div>
+              <div style="text-align:center;"><div style="width:48px;height:48px;background:var(--primary);border-radius:20px;margin:0 auto 6px;opacity:0.94;"></div><span style="font-size:9px;color:var(--text-muted);font-family:var(--font-mono);">20px</span></div>
+              <div style="text-align:center;"><div style="width:48px;height:48px;background:var(--primary);border-radius:28px;margin:0 auto 6px;"></div><span style="font-size:9px;color:var(--text-muted);font-family:var(--font-mono);">28px</span></div>
+              <div style="text-align:center;"><div style="width:48px;height:48px;background:var(--primary);border-radius:9999px;margin:0 auto 6px;"></div><span style="font-size:9px;color:var(--text-muted);font-family:var(--font-mono);">pill</span></div>
+            </div>
+          </div>
+          <div>
+            <p style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:12px;">ESPAÇAMENTO</p>
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;">
+              <div class="space-item"><div class="space-box" style="width:4px;"></div><div class="space-meta">4px — gap mínimo</div></div>
+              <div class="space-item"><div class="space-box" style="width:8px;"></div><div class="space-meta">8px — gap cards sm</div></div>
+              <div class="space-item"><div class="space-box" style="width:12px;"></div><div class="space-meta">12px — ícone/texto</div></div>
+              <div class="space-item"><div class="space-box" style="width:16px;"></div><div class="space-meta">16px — gap padrão</div></div>
+              <div class="space-item"><div class="space-box" style="width:24px;"></div><div class="space-meta">24px — padding card</div></div>
+              <div class="space-item"><div class="space-box" style="width:32px;"></div><div class="space-meta">32px — padding mobile</div></div>
+              <div class="space-item"><div class="space-box" style="width:48px;"></div><div class="space-meta">48px — margin headers</div></div>
+              <div class="space-item"><div class="space-box" style="width:80px;"></div><div class="space-meta">80px — padding seção</div></div>
+            </div>
+            <p style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:var(--text-muted);margin-top:28px;margin-bottom:12px;">ANIMAÇÕES (im-anim)</p>
+            <table class="token-table" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;">
+              <thead><tr><th>Classe</th><th>Efeito</th></tr></thead>
+              <tbody>
+                <tr><td><code>.im-anim</code></td><td>Base — paused frame 0</td></tr>
+                <tr><td><code>.im-anim-up</code></td><td>Fade + translateY(28px)</td></tr>
+                <tr><td><code>.im-anim-left/right</code></td><td>Fade + translateX(±32px)</td></tr>
+                <tr><td><code>.im-anim-visible</code></td><td>Trigger — play state: running</td></tr>
+                <tr><td><code>.im-anim-delay-1..5</code></td><td>Stagger 100–500ms</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. LAYOUT -->
+    <section class="ds-section" id="layout">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">05 — Layout</span>
+          <h2 class="section-title">Estrutura de Páginas</h2>
+          <p class="section-desc">max-width 1100px. Mobile-first. Cada rota tem quebra de cor própria.</p>
+        </div>
+        <div class="grid-2" style="gap:24px;">
+          <div>
+            <p style="font-size:12px;font-weight:700;color:var(--text-bright);margin-bottom:10px;">/ — Home</p>
+            <div class="layout-strip">
+              <div class="layout-nav-bar"><span class="layout-nav-dot">orakulo.</span><div style="display:flex;gap:6px;"><div style="width:36px;height:5px;background:var(--dk-border);border-radius:3px;"></div><div style="width:36px;height:5px;background:var(--dk-border);border-radius:3px;"></div></div></div>
+              <div class="layout-label">bg #06060e — hero</div>
+              <div class="layout-hero-strip"><div class="layout-block" style="width:65%;"></div><div class="layout-block" style="width:80%;"></div><div style="display:flex;gap:8px;margin-top:4px;"><div style="width:72px;height:20px;background:var(--primary);border-radius:6px;"></div><div style="width:72px;height:20px;background:var(--dk-border);border-radius:6px;"></div></div></div>
+              <div class="layout-label">bg #0d0d1a — seções</div>
+              <div class="layout-white-strip"><div class="layout-card-mini"></div><div class="layout-card-mini"></div><div class="layout-card-mini"></div></div>
+              <div class="layout-footer-strip"><div style="height:14px;"></div></div>
+              <div class="layout-label" style="border-top:none;">footer · bg #0d0d1a</div>
+            </div>
+          </div>
+          <div>
+            <p style="font-size:12px;font-weight:700;color:var(--text-bright);margin-bottom:10px;">/servicos — Landing</p>
+            <div class="layout-strip">
+              <div class="layout-nav-bar"><span class="layout-nav-dot">orakulo.</span><div style="width:72px;height:18px;background:var(--primary);border-radius:6px;"></div></div>
+              <div class="layout-label">bg #06060e — hero + grid</div>
+              <div class="layout-hero-strip" style="flex-direction:row;gap:12px;align-items:center;"><div style="flex:1;display:flex;flex-direction:column;gap:6px;"><div class="layout-block" style="width:90%;"></div><div class="layout-block" style="width:70%;"></div></div><div style="width:70px;height:60px;border:1px solid var(--dk-border);border-radius:10px;background:var(--dk-surface);flex-shrink:0;"></div></div>
+              <div class="layout-label">bg #0d0d1a — features</div>
+              <div class="layout-white-strip"><div class="layout-card-mini"></div><div class="layout-card-mini"></div></div>
+              <div class="layout-label">bg #06060e — alternado</div>
+              <div class="layout-hero-strip" style="height:32px;"></div>
+              <div class="layout-label" style="background:var(--dk-surface-l3);">CTA Final · preto absoluto</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. ROADMAP -->
+    <section class="ds-section" id="roadmap">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">06 — Roadmap</span>
+          <h2 class="section-title">Páginas do Ecossistema</h2>
+          <p class="section-desc">Monolito omni em orakulo.dev. SEO concentrado em único domínio.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:40px;">
+          <div style="display:flex;align-items:center;gap:16px;padding:16px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);"><code style="min-width:180px;">/</code><span style="flex:1;font-size:13px;color:var(--text-base);">Home institucional — Navbar, Hero, Serviços, Formulário</span><span class="tag-pill tag-done">✓ Concluído</span></div>
+          <div style="display:flex;align-items:center;gap:16px;padding:16px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);"><code style="min-width:180px;">/bio</code><span style="flex:1;font-size:13px;color:var(--text-base);">Hub pessoal Kevin — Linktree, redes sociais, SSG puro</span><span class="tag-pill tag-done">✓ Concluído</span></div>
+          <div style="display:flex;align-items:center;gap:16px;padding:16px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);"><code style="min-width:180px;">/imobiliaria</code><span style="flex:1;font-size:13px;color:var(--text-base);">Landing B2B para imobiliárias</span><span class="tag-pill tag-done">✓ Concluído</span></div>
+          <div style="display:flex;align-items:center;gap:16px;padding:16px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);"><code style="min-width:180px;">/corretores</code><span style="flex:1;font-size:13px;color:var(--text-base);">Landing para corretores autônomos</span><span class="tag-pill tag-done">✓ Concluído</span></div>
+          <div style="display:flex;align-items:center;gap:16px;padding:16px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);"><code style="min-width:180px;">/previdenciario</code><span style="flex:1;font-size:13px;color:var(--text-base);">Landing para advogados previdenciários</span><span class="tag-pill tag-done">✓ Concluído</span></div>
+          <div style="display:flex;align-items:center;gap:16px;padding:16px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);"><code style="min-width:180px;">/servicos</code><span style="flex:1;font-size:13px;color:var(--text-base);">LP Agente de Atendimento IA — WhatsApp/DM</span><span class="tag-pill tag-done">✓ Concluído</span></div>
+          <div style="display:flex;align-items:center;gap:16px;padding:16px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);"><code style="min-width:180px;">/blog</code><span style="flex:1;font-size:13px;color:var(--text-base);">Blog de conteúdo SSG</span><span class="tag-pill tag-soon">📅 Sprint 4</span></div>
+          <div style="display:flex;align-items:center;gap:16px;padding:16px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);"><code style="min-width:180px;">/cursos</code><span style="flex:1;font-size:13px;color:var(--text-base);">Aulas e conteúdos estáticos</span><span class="tag-pill tag-soon">📅 Sprint 4</span></div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:24px;">
+          <span class="eyebrow" style="display:block;margin-bottom:18px;">[ Stack Técnica ]</span>
+          <div class="grid-4">
+            <div style="text-align:center;padding:16px 10px;border:1px solid var(--border);border-radius:var(--radius-lg);"><div style="font-size:20px;margin-bottom:6px;">▲</div><div style="font-size:12px;font-weight:700;color:var(--text-bright);">Next.js 15</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px;">App Router · SSG</div></div>
+            <div style="text-align:center;padding:16px 10px;border:1px solid var(--border);border-radius:var(--radius-lg);"><div style="font-size:20px;margin-bottom:6px;">🎨</div><div style="font-size:12px;font-weight:700;color:var(--text-bright);">Tailwind v4</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px;">CSS custom props</div></div>
+            <div style="text-align:center;padding:16px 10px;border:1px solid var(--border);border-radius:var(--radius-lg);"><div style="font-size:20px;margin-bottom:6px;">🧩</div><div style="font-size:12px;font-weight:700;color:var(--text-bright);">Shadcn UI</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px;">button · card · form</div></div>
+            <div style="text-align:center;padding:16px 10px;border:1px solid var(--border);border-radius:var(--radius-lg);"><div style="font-size:20px;margin-bottom:6px;">⚡</div><div style="font-size:12px;font-weight:700;color:var(--text-bright);">Aceternity UI</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px;">micro-interações</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. ANIMAÇÃO -->
+    <section class="ds-section" id="animation">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">07 — Animação</span>
+          <h2 class="section-title">Rede Neural — Hero Background</h2>
+          <p class="section-desc">Animação canvas em azul elétrico com glow, desfoque e pulso. Uso: fundo sutil da hero, opacity 0.5–0.7 sobre dark page-bg.</p>
+        </div>
+
+        <!-- Preview container -->
+        <div style="position:relative;border-radius:var(--radius-2xl);overflow:hidden;border:1px solid var(--border);background:#06060e;height:400px;margin-bottom:24px;">
+          <!-- Canvas da animação -->
+          <canvas id="neuralCanvas" style="position:absolute;inset:0;width:100%;height:100%;"></canvas>
+
+          <!-- Overlay gradiente suave nas bordas -->
+          <div style="position:absolute;inset:0;background:radial-gradient(ellipse 70% 70% at 50% 50%,transparent 40%,#06060e 100%);pointer-events:none;"></div>
+
+          <!-- Conteúdo de exemplo hero -->
+          <div style="position:relative;z-index:2;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px;gap:16px;">
+            <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);backdrop-filter:blur(12px);border:1px solid rgba(0,87,255,0.25);border-radius:999px;padding:6px 16px;">
+              <span style="width:7px;height:7px;border-radius:50%;background:#0057ff;box-shadow:0 0 8px #0057ff;animation:pulse 2s ease-in-out infinite;"></span>
+              <span style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.6);letter-spacing:0.08em;">IDV — Rede Neural</span>
+            </div>
+            <h2 style="font-size:clamp(28px,4vw,48px);font-weight:800;letter-spacing:-0.05em;line-height:1.05;background:linear-gradient(135deg,#0057ff 0%,#60a5fa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Automação & IA<br>para o seu negócio.</h2>
+            <p style="font-size:15px;color:rgba(176,176,204,0.8);max-width:380px;line-height:1.65;">Agentes de atendimento que qualificam leads 24/7 — enquanto você dorme.</p>
+            <div style="display:flex;gap:10px;margin-top:6px;">
+              <button class="btn btn-primary" style="font-size:13px;">Iniciar Parceria <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></button>
+              <button class="btn btn-secondary" style="font-size:13px;background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);">Ver serviços ↓</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Specs técnicas -->
+        <div class="grid-3" style="gap:12px;margin-bottom:24px;">
+          <div style="padding:18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);">
+            <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:8px;">NODOS</div>
+            <div style="font-size:22px;font-weight:800;color:var(--text-bright);letter-spacing:-0.04em;">55</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">pontos flutuantes com pulso</div>
+          </div>
+          <div style="padding:18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);">
+            <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:8px;">CONEXÕES</div>
+            <div style="font-size:22px;font-weight:800;color:var(--text-bright);letter-spacing:-0.04em;">dist &lt;130px</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">alpha proporcional à distância</div>
+          </div>
+          <div style="padding:18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);">
+            <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:8px;">EFEITOS</div>
+            <div style="font-size:22px;font-weight:800;color:var(--text-bright);letter-spacing:-0.04em;">Glow + Blur</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">radialGradient + shadowBlur canvas</div>
+          </div>
+        </div>
+
+        <!-- Uso recomendado -->
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <div style="flex:1;min-width:220px;padding:16px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);">
+            <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:var(--primary);margin-bottom:6px;">USO RECOMENDADO</div>
+            <div style="display:flex;flex-direction:column;gap:5px;">
+              <div style="display:flex;gap:8px;"><svg width="14" height="14" fill="none" stroke="var(--primary)" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span style="font-size:12px;color:var(--text-base);">Hero de landing pages (opacity 0.5–0.7)</span></div>
+              <div style="display:flex;gap:8px;"><svg width="14" height="14" fill="none" stroke="var(--primary)" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span style="font-size:12px;color:var(--text-base);">Seção CTA final sobre fundo escuro</span></div>
+              <div style="display:flex;gap:8px;"><svg width="14" height="14" fill="none" stroke="var(--primary)" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span style="font-size:12px;color:var(--text-base);">Thumbnail de apresentações e artes</span></div>
+            </div>
+          </div>
+          <div style="flex:1;min-width:220px;padding:16px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);">
+            <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:#ef4444;margin-bottom:6px;">EVITAR</div>
+            <div style="display:flex;flex-direction:column;gap:5px;">
+              <div style="display:flex;gap:8px;"><svg width="14" height="14" fill="none" stroke="#ef4444" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg><span style="font-size:12px;color:var(--text-base);">Usar sobre fundos claros (baixo contraste)</span></div>
+              <div style="display:flex;gap:8px;"><svg width="14" height="14" fill="none" stroke="#ef4444" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg><span style="font-size:12px;color:var(--text-base);">Nodos muito grandes ou rápidos</span></div>
+              <div style="display:flex;gap:8px;"><svg width="14" height="14" fill="none" stroke="#ef4444" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg><span style="font-size:12px;color:var(--text-base);">Mais que 80 nodos (performance mobile)</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // ─── NEURAL NETWORK ANIMATION ──────────────────────────
+    (function() {
+      const canvas = document.getElementById('neuralCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const N = 55;
+      const MAX_DIST = 130;
+      let nodes = [];
+      let raf;
+      let primaryColor = [0, 87, 255];
+
+      function resize() {
+        canvas.width  = canvas.offsetWidth  * window.devicePixelRatio;
+        canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+        ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      }
+
+      function init() {
+        const w = canvas.offsetWidth;
+        const h = canvas.offsetHeight;
+        nodes = Array.from({ length: N }, () => ({
+          x:  Math.random() * w,
+          y:  Math.random() * h,
+          vx: (Math.random() - 0.5) * 0.35,
+          vy: (Math.random() - 0.5) * 0.35,
+          r:  Math.random() * 1.8 + 1.2,
+          pulse: Math.random() * Math.PI * 2,
+          pSpeed: 0.018 + Math.random() * 0.018,
+        }));
+      }
+
+      function draw() {
+        const W = canvas.offsetWidth;
+        const H = canvas.offsetHeight;
+        const [r, g, b] = primaryColor;
+        ctx.clearRect(0, 0, W, H);
+
+        // Update
+        nodes.forEach(n => {
+          n.x += n.vx; n.y += n.vy;
+          n.pulse += n.pSpeed;
+          if (n.x < 0 || n.x > W) n.vx *= -1;
+          if (n.y < 0 || n.y > H) n.vy *= -1;
+        });
+
+        // Connections
+        for (let i = 0; i < nodes.length; i++) {
+          for (let j = i + 1; j < nodes.length; j++) {
+            const a = nodes[i], bN = nodes[j];
+            const dx = a.x - bN.x, dy = a.y - bN.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < MAX_DIST) {
+              const alpha = (1 - dist / MAX_DIST) * 0.35;
+              ctx.beginPath();
+              ctx.moveTo(a.x, a.y);
+              ctx.lineTo(bN.x, bN.y);
+              ctx.strokeStyle = `rgba(${r},${g},${b},${alpha})`;
+              ctx.lineWidth = 0.6;
+              ctx.stroke();
+            }
+          }
+        }
+
+        // Nodes
+        nodes.forEach(n => {
+          const glow = (Math.sin(n.pulse) * 0.5 + 0.5);
+
+          // Outer halo
+          const grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 9);
+          grad.addColorStop(0, `rgba(${r},${g},${b},${0.12 * glow})`);
+          grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, n.r * 9, 0, Math.PI * 2);
+          ctx.fillStyle = grad;
+          ctx.fill();
+
+          // Inner core
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+          ctx.shadowBlur = 8 * glow;
+          ctx.shadowColor = `rgba(${r},${g},${b},0.8)`;
+          ctx.fillStyle = `rgba(${r},${g},${b},${0.55 + 0.45 * glow})`;
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        });
+
+        raf = requestAnimationFrame(draw);
+      }
+
+      function hexToRgb(hex) {
+        const n = parseInt(hex.replace('#',''), 16);
+        return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+      }
+
+      // Watch --primary changes
+      const observer = new MutationObserver(() => {
+        const p = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
+        if (p) primaryColor = hexToRgb(p);
+      });
+      observer.observe(document.documentElement, { attributes: true, attributeFilter: ['style'] });
+
+      resize();
+      init();
+      draw();
+      window.addEventListener('resize', () => { cancelAnimationFrame(raf); resize(); init(); draw(); });
+    })();
+  </script>
+
+  <footer style="background:var(--footer-bg);border-top:1px solid var(--border);padding:22px 32px;">
+    <div style="max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;">
+      <span style="font-size:14px;font-weight:800;letter-spacing:-0.04em;color:var(--text-bright);">orakulo<span style="color:var(--primary);">.</span>dev</span>
+      <span style="font-size:12px;color:var(--text-muted);">Design System IDV Cool — Abril 2026</span>
+    </div>
+  </footer>
+
+  <script>
+    // ─── BLUES disponíveis para tweaks ─────────────────────
+    const BLUES = [
+      { hex: '#0057ff', hover: '#0047d4', label: 'Elétrico'  },
+      { hex: '#2563eb', hover: '#1d4ed8', label: 'Royal'     },
+      { hex: '#3b5bdb', hover: '#2f4acb', label: 'Índigo'    },
+      { hex: '#4f46e5', hover: '#3730a3', label: 'Violeta'   },
+      { hex: '#0ea5e9', hover: '#0284c7', label: 'Sky'       },
+    ];
+
+    const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+      "primaryIndex": 0,
+      "darkMode": false
+    }/*EDITMODE-END*/;
+    let state = { ...TWEAK_DEFAULTS };
+
+    function applyBlue(idx) {
+      const b = BLUES[idx];
+      document.documentElement.style.setProperty('--primary', b.hex);
+      document.documentElement.style.setProperty('--primary-hover', b.hover);
+      document.documentElement.style.setProperty('--primary-glow', hexToRgba(b.hex, 0.22));
+      document.documentElement.style.setProperty('--primary-soft', hexToRgba(b.hex, 0.08));
+      // update swatches
+      const ps = document.getElementById('primarySwatch');
+      const ph = document.getElementById('primaryHex');
+      const sw = document.getElementById('swPrimary');
+      const sh = document.getElementById('swPrimaryHex');
+      const sh2 = document.getElementById('swHover');
+      const sh3 = document.getElementById('swHoverHex');
+      if (ps) ps.style.background = b.hex;
+      if (ph) ph.textContent = b.hex + ' · --primary';
+      if (sw) sw.style.background = b.hex;
+      if (sh) sh.textContent = b.hex + ' · --primary';
+      if (sh2) sh2.style.background = b.hover;
+      if (sh3) sh3.textContent = b.hover + ' · --primary-hover';
+    }
+
+    function hexToRgba(hex, a) {
+      const r = parseInt(hex.slice(1,3),16);
+      const g = parseInt(hex.slice(3,5),16);
+      const b = parseInt(hex.slice(5,7),16);
+      return `rgba(${r},${g},${b},${a})`;
+    }
+
+    function applyMode(dark) {
+      if (dark) { document.documentElement.classList.add('dark'); sun.style.display='block'; moon.style.display='none'; }
+      else { document.documentElement.classList.remove('dark'); sun.style.display='none'; moon.style.display='block'; }
+    }
+
+    // Init
+    const sun = document.getElementById('iconSun');
+    const moon = document.getElementById('iconMoon');
+    applyBlue(state.primaryIndex);
+    applyMode(state.darkMode);
+
+    // Theme button
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      state.darkMode = !state.darkMode;
+      applyMode(state.darkMode);
+      window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { darkMode: state.darkMode } }, '*');
+    });
+
+    // ─── TWEAKS ────────────────────────────────────────────
+    window.addEventListener('message', e => {
+      if (e.data?.type === '__activate_edit_mode') showTweaks();
+      if (e.data?.type === '__deactivate_edit_mode') hideTweaks();
+    });
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+
+    function showTweaks() {
+      if (document.getElementById('tweaks-panel')) return;
+      const p = document.createElement('div');
+      p.id = 'tweaks-panel';
+      p.style.cssText = `
+        position:fixed;bottom:24px;right:24px;z-index:9999;
+        background:var(--surface);border:1px solid var(--border);
+        border-radius:18px;padding:20px 18px;width:230px;
+        box-shadow:0 12px 48px rgba(0,0,0,0.3);
+        font-family:'Geist',sans-serif;backdrop-filter:blur(12px);
+      `;
+      p.innerHTML = `
+        <p style="font-size:10px;font-weight:700;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:16px;">TWEAKS</p>
+
+        <p style="font-size:12px;font-weight:600;color:var(--text-base);margin-bottom:10px;">Azul Primary</p>
+        <div style="display:flex;flex-direction:column;gap:6px;" id="blueOpts">
+          ${BLUES.map((b,i) => `
+            <button onclick="selectBlue(${i})" id="blueBtn${i}" style="
+              display:flex;align-items:center;gap:10px;padding:8px 10px;
+              border-radius:10px;border:1px solid ${i===state.primaryIndex?b.hex:'var(--border)'};
+              background:${i===state.primaryIndex?hexToRgba(b.hex,0.1):'transparent'};
+              cursor:pointer;font-family:inherit;width:100%;text-align:left;
+              transition:all 0.15s;
+            ">
+              <div style="width:20px;height:20px;border-radius:50%;background:${b.hex};flex-shrink:0;box-shadow:0 0 8px ${hexToRgba(b.hex,0.4)};"></div>
+              <span style="font-size:12px;font-weight:600;color:var(--text-bright);">${b.label}</span>
+              <span style="font-size:10px;color:var(--text-muted);font-family:monospace;margin-left:auto;">${b.hex}</span>
+            </button>
+          `).join('')}
+        </div>
+
+        <hr style="border:none;border-top:1px solid var(--border);margin:14px 0;">
+
+        <p style="font-size:12px;font-weight:600;color:var(--text-base);margin-bottom:10px;">Modo</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+          <button onclick="setMode(false)" style="padding:8px;font-size:11px;font-weight:700;border-radius:8px;cursor:pointer;background:#f5f5f7;border:1px solid #dddde8;color:#09090f;font-family:inherit;">☀️ Light</button>
+          <button onclick="setMode(true)" style="padding:8px;font-size:11px;font-weight:700;border-radius:8px;cursor:pointer;background:#06060e;border:1px solid #1e1e32;color:white;font-family:inherit;">🌙 Dark</button>
+        </div>
+      `;
+      document.body.appendChild(p);
+    }
+
+    function hideTweaks() {
+      const p = document.getElementById('tweaks-panel');
+      if (p) p.remove();
+    }
+
+    function selectBlue(idx) {
+      state.primaryIndex = idx;
+      applyBlue(idx);
+      // update buttons
+      BLUES.forEach((b, i) => {
+        const btn = document.getElementById('blueBtn' + i);
+        if (!btn) return;
+        btn.style.border = `1px solid ${i===idx ? b.hex : 'var(--border)'}`;
+        btn.style.background = i===idx ? hexToRgba(b.hex,0.1) : 'transparent';
+      });
+      window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { primaryIndex: idx } }, '*');
+    }
+
+    function setMode(dark) {
+      state.darkMode = dark;
+      applyMode(dark);
+      window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { darkMode: dark } }, '*');
+    }
+  </script>
+</body>
+</html>
